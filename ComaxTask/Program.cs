@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ComaxTask.Forms;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +17,17 @@ namespace ComaxTask
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+
+            LoginForm lf = new LoginForm();
+            if(lf.ShowDialog()==DialogResult.OK)
+            {
+                Application.Run(new FormMainMenu());
+            }
+            else
+            {
+                Application.Exit();
+            }
+           
         }
     }
 }

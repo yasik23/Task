@@ -11,14 +11,15 @@ namespace ComaxTask.DAL
 {
     public class Database
     {
-        public static string SqlConnectionString= "Data Source=(localdb)/MSSQLLocalDB; Initial Catalog = ComaxTask; Integrated Security = true ";
+        public static string SqlConnectionString = @"Data Source = NEW-STATIONARY-; Initial Catalog = ComaxTaskDB; Integrated Security = True";
+       
 
         /// <summary>
         /// Method for getting result of SQL Query and adding to Data Set  
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
-        public static DataSet getDataset(string query)
+        public static DataSet GetDataset(string query)
         {
             SqlConnection connection = new SqlConnection(SqlConnectionString);
             connection.Open();
@@ -42,6 +43,38 @@ namespace ComaxTask.DAL
             finally
             {
                 CloseConnection(ref connection);
+            }
+        }
+
+
+        public static DataSet GetDataSet_WithParameters(string query,List<SqlParameter> parameters)
+        {
+            DataSet ds = new DataSet();
+            SqlConnection con = new SqlConnection(SqlConnectionString);
+            con.Open();
+            try
+            {
+                using (SqlCommand cmd=new SqlCommand(query,con))
+                {
+                    if(parameters!=null)
+                    {
+                        cmd.Parameters.AddRange(parameters.ToArray());
+                    }
+                    
+                    using (SqlDataAdapter Adapter = new SqlDataAdapter(cmd))
+                    {
+                        Adapter.Fill(ds);
+                    }
+                    return ds;
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                CloseConnection(ref con);
             }
         }
 

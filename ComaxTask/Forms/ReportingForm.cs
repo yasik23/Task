@@ -8,11 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ComaxTask
+namespace ComaxTask.Forms
 {
-    public partial class Form1 : Form
+    public partial class ReportingForm : Form
     {
-        public Form1()
+        public ReportingForm()
         {
             InitializeComponent();
         }
