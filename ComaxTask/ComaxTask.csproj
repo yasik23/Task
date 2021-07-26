@@ -117,8 +117,17 @@
     <EmbeddedResource Include="Forms\LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MyOrdersForm.resx">
+      <DependentUpon>MyOrdersForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\ProductsListForm.resx">
       <DependentUpon>ProductsListForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ProfileForm.resx">
+      <DependentUpon>ProfileForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ReportingForm.resx">
+      <DependentUpon>ReportingForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -147,6 +156,10 @@
     <Content Include="Products\products.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\Coming-Soon.gif.gif" />
+    <None Include="Resources\imagecominsoon 400.gif" />
+    <None Include="Resources\imagecominsoon200.gif" />
+    <None Include="Resources\imagecominsoon.gif" />
     <None Include="Resources\search24.png" />
     <None Include="Resources\search 16.png" />
     <None Include="Resources\reporting %2845%29.png" />

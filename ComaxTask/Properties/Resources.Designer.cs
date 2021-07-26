@@ -63,6 +63,46 @@ namespace ComaxTask.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Coming_Soon_gif {
+            get {
+                object obj = ResourceManager.GetObject("Coming-Soon.gif", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap imagecominsoon {
+            get {
+                object obj = ResourceManager.GetObject("imagecominsoon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap imagecominsoon_400 {
+            get {
+                object obj = ResourceManager.GetObject("imagecominsoon 400", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap imagecominsoon200 {
+            get {
+                object obj = ResourceManager.GetObject("imagecominsoon200", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap List__45_ {
             get {
                 object obj = ResourceManager.GetObject("List__45_", resourceCulture);

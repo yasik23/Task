@@ -17,9 +17,11 @@ namespace ComaxTask.Forms
 {
     public partial class LoginForm : Form
     {
+        public static string connectedUser = " ";
         public LoginForm()
         {
             InitializeComponent();
+           
 
             //Watermark text for Username
             txtUsername.Font = new Font(txtUsername.Font,  FontStyle.Italic);
@@ -153,6 +155,7 @@ namespace ComaxTask.Forms
             DataTable dt = ComaxTask.DAL.Database.GetDataSet_WithParameters(query, l).Tables[0];
             if (dt!=null && dt.Rows.Count==1)
             {
+                connectedUser = txtUsername.Text;
                 SetUserProfile(ref dt);
                 return true;
             }

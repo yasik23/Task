@@ -88,7 +88,7 @@ namespace ComaxTask
          
         }
 
-        private void FirstOpenChildForm (Form childForm, object sender)
+        public void FirstOpenChildForm (Form childForm, object sender)
         {
             if (activeForm != null)
             {
@@ -113,7 +113,7 @@ namespace ComaxTask
                 {
                   
                     currentButton = (Button)btnSender;
-                   // currentButton.BackColor = Color.FromArgb(188,188,188);                 
+                                  
                 }
             }
         }

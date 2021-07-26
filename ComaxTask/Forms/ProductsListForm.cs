@@ -18,11 +18,15 @@ namespace ComaxTask.Forms
     public partial class ProductsListForm : Form
     {
         DataTable main_dt = new DataTable();
-       
-        //DataRow main_dr = null;
+        bool IsEditMode = false;
+        string lastOrder;
+        DataTable dt; 
+
         public ProductsListForm()
         {
             InitializeComponent();
+            lastOrder = GetLastOrder_byUser(LoginForm.connectedUser.Trim());
+            dt = GetLastProductList(Convert.ToInt32(lastOrder));
         }
 
         private void ProductsListForm_Load(object sender, EventArgs e)
@@ -38,6 +42,7 @@ namespace ComaxTask.Forms
             }
 
             
+           
             main_dt.Columns.Add("Product Name");
             main_dt.Columns.Add("Barcode");
             main_dt.Columns.Add("Quantity");
@@ -48,9 +53,29 @@ namespace ComaxTask.Forms
             dgvOrderedProducts.Sort(dgvOrderedProducts.Columns["Product Name"], ListSortDirection.Descending);
             dgvOrderedProducts.Sort(dgvOrderedProducts.Columns["Barcode"], ListSortDirection.Descending);
             dgvOrderedProducts.Sort(dgvOrderedProducts.Columns["Quantity"], ListSortDirection.Descending);
+
+            string lastOrder = GetLastOrder_byUser(LoginForm.connectedUser.Trim());
+            if (lastOrder != null)
+            {
+                
+                dgvOrderedProducts.DataSource= GetLastProductList(Convert.ToInt32(lastOrder));
+                IsEditMode = true;
+            }
         }
 
-        
+        private DataTable GetLastProductList(int order_num)
+        {
+            string q = @"Select Product_Name,Barcode,Qty
+                         from Orders
+                         inner join Order_Details on Orders.Order_ID = Order_Details.Order_ID
+                         where Orders.Order_ID =" + order_num;
+            DataTable dt = DAL.Database.GetDataset(q).Tables[0];
+
+            //if (dt != null || dt.Rows.Count >= 0)
+                return dt;
+        }
+
+
 
         #region AutoComplete Methods
 
@@ -170,20 +195,43 @@ namespace ComaxTask.Forms
 
         private void btnAddtoOrder_Click(object sender, EventArgs e)
         {
-            DataRow dr = main_dt.NewRow();
-                
-            dr["Product Name"] = txtProductName.Text;
-            dr["Barcode"] = txtBarCode.Text;
-            dr["Quantity"] = txtQty.Text;
-            main_dt.Rows.Add(dr);
+            if(IsEditMode==false)
+            {
+                if (String.IsNullOrWhiteSpace(txtQty.Text))
+                {
+                    MessageBox.Show("Please enter quantity of products");
+                }
+                else
+                {
+                    DataRow dr = main_dt.NewRow();
+                    dr["Product Name"] = txtProductName.Text;
+                    dr["Barcode"] = txtBarCode.Text;
+                    dr["Quantity"] = txtQty.Text;
+                    main_dt.Rows.Add(dr);
 
-            dgvOrderedProducts.DataSource = main_dt;
+                    dgvOrderedProducts.DataSource = main_dt;
+                }
+
+            }
+            else
+            {
+                
+               
+                      DataRow dr = dt.NewRow();
+                dr["Product_Name"] = txtProductName.Text;
+                dr["Barcode"] = txtBarCode.Text;
+                dr["Qty"] = txtQty.Text;
+                dt.Rows.Add(dr);
+                dgvOrderedProducts.DataSource =dt;
+            }
+
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
 
-            var created_by = GetConnectedUser();
+            
+            var created_by = LoginForm.connectedUser.Trim();
 
             //MessageBox.Show(created_by.ToString());
 
@@ -195,22 +243,42 @@ namespace ComaxTask.Forms
             DAL.Database.ParametersCommand(order_query, l);
 
             string last_order = GetLastOrder_byUser(created_by);
-            //string order_detail = "Insert into Order_Details(Order_ID,Product_Name, Barcode,Qty,Order_Date,Created_by) Values(@Order_ID,@Product_Name, @Barcode,@Qty,@Order_Date,@Created_by)";
-            //List<SqlParameter> k = new List<SqlParameter>();
-            //l.Add(new SqlParameter("@Order_ID", last_order));
-            //l.Add(new SqlParameter("@Product_Name", ));
+            string order_detail = "Insert into Order_Details(Order_ID,Product_Name, Barcode,Qty,Order_Date,Created_by) Values(@Order_ID,@Product_Name, @Barcode,@Qty,@Order_Date,@Created_by)";
 
+            if ( dgvOrderedProducts.Rows.Count > 1)
+            {
+                foreach (DataGridViewRow row in dgvOrderedProducts.Rows)
+                {
+                    if (!row.IsNewRow)
+                    {
+                        List<SqlParameter> k = new List<SqlParameter>();
+                        k.Add(new SqlParameter("@Order_ID", last_order));
+                        k.Add(new SqlParameter("@Product_Name", row.Cells[0].Value));
+                        k.Add(new SqlParameter("@Barcode", row.Cells[1].Value));
+                        k.Add(new SqlParameter("@Qty", row.Cells[2].Value));
+                        k.Add(new SqlParameter("@Order_Date", DateTime.Now));
+                        k.Add(new SqlParameter("@Created_by", created_by));
+                        DAL.Database.ParametersCommand(order_detail, k);
+                    }
+                }
+                MessageBox.Show("Your order saved successfully");
+               this.dgvOrderedProducts.DataSource = null;
+               this.dgvOrderedProducts.Rows.Clear();
+                this.dgvOrderedProducts.DataSource = main_dt;
+                txtSearch.Clear();
+                txtProductName.Clear();
+                txtBarCode.Clear();
+                txtQty.Clear();
+
+               // dgvOrderedProducts.Refresh();
+            }
+            else
+            {
+                MessageBox.Show("Please add products to your orders");
+            }
 
         }
 
-        private string GetConnectedUser ()
-        {
-            string connected_user = @"select Top 1 Username
-                                     from Users
-                                     order by Last_Connection DESC";
-            var created_by = DAL.Database.ExecuteScalarWithAnonymousType(connected_user);
-            return created_by.ToString();
-        }
 
         private string GetLastOrder_byUser(string username)
         {
@@ -219,7 +287,23 @@ namespace ComaxTask.Forms
                                      where Created_by='" + username+ "'order by Order_Date DESC";
 
             var last_order = DAL.Database.ExecuteScalarWithAnonymousType(q);
-            return last_order.ToString();
+            if(last_order!=null)
+            {
+                return last_order.ToString();
+            }
+           else
+            {
+                MessageBox.Show("You have no orders yet");
+                return null;
+            }
+              
+           
+            
+        }
+
+        private void dgvOrderedProducts_Sorted(object sender, EventArgs e)
+        {
+           
         }
     }
 

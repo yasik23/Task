@@ -10,12 +10,25 @@ order by Last_Connection DESC
 
 Insert into Orders (Order_Date,Created_by) Values(GETDATE(),'ykolomeisky')
 
-select Top 1 Order_ID
+select top 1 Order_ID
 from Orders
-where Created_by='ykolomeisky'
+where Created_by='mcohen'
 order by Order_Date DESC
 
 
+select top 1 Order_ID
+from Orders
+where Created_by='comax'
+order by Order_Date DESC
+
+
+select *
+from Orders
+where Created_by='ykolomeisky'
+Order by Order_Date
+
+select*
+from Order_Details
 
 Select * From Users Where Username='ykolomeisky' and Password='123456'
 
@@ -23,10 +36,12 @@ UPDATE Users SET Last_Connection=GETDATE() WHERE User_ID=3
 
 SELECT GETDATE()
 
-INSERT INTO Users (Last_Connection)
+INSERT INTO Users (Username,Password,First_Name,Last_Name,User_Email,Company)
 
-VALUES (convert(datetime,'20-01-01 00:00:00 ',5))
+VALUES ('Comax','123456','Israel','Israeli','isisraeli@comax.com','Comax')
 
+select*
+from Users
 
 select User_ID from Users where Username='ykolomeisky'
 
@@ -40,3 +55,15 @@ CREATE TABLE Order_Details (
       Qty  varchar (255) not null,
       Order_Date datetime  NOT NULL,
       Created_by varchar (255) not null)
+
+      Select Product_Name,Barcode,Qty,Orders.Order_ID
+      from Orders
+      inner join Order_Details on Orders.Order_ID=Order_Details.Order_ID
+
+      where Orders.Order_ID=11
+
+      Delete From Orders where Order_ID>0
+      Delete From Order_Details where Detail_ID>0
+
+      select*from Orders
+      select * from Order_Details
